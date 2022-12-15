@@ -6,7 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/kbinani/screenshot/internal/util"
+	"github.com/a702169588/screenshot/internal/util"
 	win32 "github.com/kbinani/win"
 	"github.com/lxn/win"
 )
