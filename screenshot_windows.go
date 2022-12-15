@@ -2,11 +2,13 @@ package screenshot
 
 import (
 	"errors"
-	"github.com/kbinani/screenshot/internal/util"
-	win "github.com/lxn/win"
 	"image"
 	"syscall"
 	"unsafe"
+
+	"github.com/kbinani/screenshot/internal/util"
+	win32 "github.com/kbinani/win"
+	"github.com/lxn/win"
 )
 
 var (
@@ -70,7 +72,18 @@ func Capture(x, y, width, height int) (*image.RGBA, error) {
 	if !win.BitBlt(memory_device, 0, 0, int32(width), int32(height), hdc, int32(x), int32(y), win.SRCCOPY) {
 		return nil, errors.New("BitBlt failed")
 	}
-
+	win.GetSystemMetrics(win.SM_SAMEDISPLAYFORMAT)
+	cursor := win32.CURSORINFO{}
+	info := win32.ICONINFO{}
+	point := win32.POINT{}
+	cursor.CbSize = uint32(unsafe.Sizeof(win32.CURSORINFO{}))
+	win32.GetCursorInfo(&cursor)
+	win32.ShowCursor(true)
+	win32.GetIconInfo(win32.HICON(cursor.HCursor), &info)
+	win32.GetCursorPos(&point)
+	cursor.PtScreenPos.X = point.X
+	cursor.PtScreenPos.Y = point.Y
+	win.DrawIconEx(memory_device, point.X, point.Y, win.HICON(cursor.HCursor), 0, 0, 0, 0, win.DI_NORMAL)
 	if win.GetDIBits(hdc, bitmap, 0, uint32(height), (*uint8)(memptr), (*win.BITMAPINFO)(unsafe.Pointer(&header)), win.DIB_RGB_COLORS) == 0 {
 		return nil, errors.New("GetDIBits failed")
 	}
