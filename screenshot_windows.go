@@ -72,10 +72,9 @@ func Capture(x, y, width, height int) (*image.RGBA, error) {
 	if !win.BitBlt(memory_device, 0, 0, int32(width), int32(height), hdc, int32(x), int32(y), win.SRCCOPY) {
 		return nil, errors.New("BitBlt failed")
 	}
-	win.GetSystemMetrics(win.SM_SAMEDISPLAYFORMAT)
-	cursor := win32.CURSORINFO{}
-	info := win32.ICONINFO{}
-	point := win32.POINT{}
+	var cursor win32.CURSORINFO
+	var info win32.ICONINFO
+	var point win32.POINT
 	cursor.CbSize = uint32(unsafe.Sizeof(win32.CURSORINFO{}))
 	win32.GetCursorInfo(&cursor)
 	win32.ShowCursor(true)
