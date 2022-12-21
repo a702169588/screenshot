@@ -73,11 +73,9 @@ func Capture(x, y, width, height int) (*image.RGBA, error) {
 		return nil, errors.New("BitBlt failed")
 	}
 	var cursor win32.CURSORINFO
-	var info win32.ICONINFO
 	var point win32.POINT
 	cursor.CbSize = uint32(unsafe.Sizeof(win32.CURSORINFO{}))
 	win32.GetCursorInfo(&cursor)
-	win32.GetIconInfo(win32.HICON(cursor.HCursor), &info)
 	win32.GetCursorPos(&point)
 	win.DrawIconEx(memory_device, point.X, point.Y, win.HICON(cursor.HCursor), 0, 0, 0, 0, win.DI_NORMAL)
 	if win.GetDIBits(hdc, bitmap, 0, uint32(height), (*uint8)(memptr), (*win.BITMAPINFO)(unsafe.Pointer(&header)), win.DIB_RGB_COLORS) == 0 {
